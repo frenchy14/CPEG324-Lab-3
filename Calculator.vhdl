@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 entity calculator is
   port(
     instr : in std_logic_vector(7 downto 0);
-    clk : in std_logic
+    clock : in std_logic
     output : out std_log_vector(7 downto 0)
   );
 end entity calculator;
