@@ -36,7 +36,7 @@ entity ALU_add is
         );
 end entity ALU_add;
 
-architecture structural of adder_8bit is
+architecture structural of ALU_add is
 component full_adder is
     port(a, b, c_in : in std_logic;
         sum, c_out : out std_logic
