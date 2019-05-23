@@ -53,7 +53,8 @@ begin
     fa5: full_adder port map(input_a(5), input_b(5), c4, sum(5), c5);
     fa6: full_adder port map(input_a(6), input_b(6), c5, sum(6), c6);
     fa7: full_adder port map(input_a(7), input_b(7), c6, sum(7), open);
-
+end architecture structural;
+    
 library ieee;
 use ieee.std_logic_1164.all;
 entity full_adder is
