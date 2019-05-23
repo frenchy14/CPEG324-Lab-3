@@ -3,13 +3,15 @@ use ieee.std_logic_1164.all;
 entity ALU is
     port(input_a, input_b : in std_logic_vector(7 downto 0);
         addsub_sel : in std_logic;
-        sum : out std_logic_vector(7 downto 0));
+        sum : out std_logic_vector(7 downto 0)
+        );
 end entity ALU;
 
 architecture structural of ALU is
 component ALU_add is
     port(input_a, input_b : in std_logic_vector(7 downto 0);
-         sum : out std_logic_vector(7 downto 0));
+         sum : out std_logic_vector(7 downto 0)
+        );
 end component ALU_add;
 
 signal second_term, inverted_second_term, negative_second_term : std_logic_vector(7 downto 0);
@@ -30,13 +32,15 @@ library ieee;
 use ieee.std_logic_1164.all;
 entity ALU_add is
     port(input_a, input_b : in std_logic_vector(7 downto 0);
-         sum : out std_logic_vector(7 downto 0));
+         sum : out std_logic_vector(7 downto 0)
+        );
 end entity ALU_add;
 
 architecture structural of adder_8bit is
 component full_adder is
     port(a, b, c_in : in std_logic;
-        sum, c_out : out std_logic);
+        sum, c_out : out std_logic
+        );
 end component full_adder;
 
 signal c0, c1, c2, c3,c4,c5,c6 : std_logic;
@@ -54,13 +58,15 @@ library ieee;
 use ieee.std_logic_1164.all;
 entity full_adder is
     port(a, b, c_in : in std_logic;
-        sum, c_out : out std_logic);
+        sum, c_out : out std_logic
+        );
 end entity full_adder;
 
 architecture structural of full_adder is
 component half_adder is
     port(a, b : in std_logic;
-        sum, carry : out std_logic);
+        sum, carry : out std_logic
+        );
 end component half_adder;
 
 signal s1, s2, s3 : std_logic;
@@ -74,7 +80,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 entity half_adder is
     port(a, b : in std_logic;
-        sum, carry : out std_logic);
+        sum, carry : out std_logic
+        );
 end entity half_adder;
 
 architecture behavioral of half_adder is
