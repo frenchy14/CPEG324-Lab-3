@@ -87,7 +87,7 @@ begin
   process(filtered_clock, display) is
     variable int_val : integer;
     begin
-      if(rising_edge(filtered_clk) then
+      if(rising_edge(filtered_clock) then
         if(display = '1') then
           int_val := to_integer(signed(reg_a_data));
           output <= reg_a_data;
