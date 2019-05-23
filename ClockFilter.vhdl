@@ -83,4 +83,3 @@ begin
     t when others;
    Q<=t;
 end architecture behavioral;
-© 2019 GitHub, Inc.
