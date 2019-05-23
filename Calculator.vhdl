@@ -6,6 +6,7 @@ entity calculator is
   port(
     instr : in std_logic_vector(7 downto 0);
     clk : in std_logic
+    output : out std_log_vector(7 downto 0);
   );
 end entity calculator;
 
@@ -31,38 +32,30 @@ architecture structural of calculator is
       reg_b_data : out std_logic_vector(7 downto 0)
     );
   end component reg_file;
+  
+  component clock_filter is
+     port (
+       clock_input : in std_logic;
+       clock_output : out std_logic;
+       sig : in std_logic;
+       trigger : in std_logic
+     );
+  end component clock_filter;
 
 
-signal write_enable, display, write_data_sel, skipcount : std_logic;
+signal filtered_clock, write_enable, display, write_data_sel, trigger, skipcount : std_logic;
 signal reg_a, reg_b, reg_write : std_logic_vector(1 downto 0);
 signal write_data, reg_a_data, reg_b_data, sign_ext, ALU_out: std_logic_vector(7 downto 0);
 
 begin
-  if((instr(7) = '0') and (instr(6) = '0') and (instr(5) = '1")) then
-    skipcount <= instr(4);
-  endif;
-
-  if(ALU_out = "00000000") then
-    if(skipcount = '1') then
-      write_enable <= '0';
-    elsif(skipcount = '0') then
-      write_enable <= '0';
-    end if;
-  end if;
-
-  if(skipcount = '1' and write_enable = '0') then
-    skipcount <= '0';
-  elsif(skipcount = '0' and write_enable = '0') then
-    write_enable <= '1';
-  end if;  
-
-  reg_file_0 : reg_file port map(reg_a, reg_b, reg_write, write_data, write_enable, reg_a_data, reg_b_data);
-  ALU0 : ALU port map(reg_a_data, reg_b_data, instr(7), ALU_out);
-
+  reg_file_0 : reg_file port map(reg_a, reg_b, reg_write, write_data, filtered_clock, write_enable, reg_a_data, reg_b_data);
+  ALU_0 : ALU port map(reg_a_data, reg_b_data, instr(7), ALU_out);
+  clock_filter_0 : clock_filter port map(clock, filtereed_clock, instr(4), trigger);
+    
   reg_b <= instr(1 downto 0);
   reg_write <= instr(5 downto 4);
 
-  display <= not (instr(7) or instr(6) or instr(5));
+  display <= not(instr(7) or instr(6) or instr(5));
 
   with display select reg_a <=
     instr(3 downto 2) when '0',
@@ -72,33 +65,51 @@ begin
   with instr(3) select sign_ext(7 downto 4) <=
     "1111" when '1',
     "0000" when others;
-
+   
   write_data_sel <= not(instr(7) and instr(6));
   with write_data_sel select write_data <=
     sign_ext when '0',
     ALU_out when others;
 
-  process(display) is
+  write_enable <= instr(7) or instr(6);
+
+  trigger <= (not instr(7)) and (not instr(6)) and (not instr(5)) and skipcount;
+
+  skipcount <= (reg_a_data(7) xnor reg_b_data(7)) and
+    (reg_a_data(6) xnor reg_b_data(6)) and 
+    (reg_a_data(5) xnor reg_b_data(5)) and
+    (reg_a_data(4) xnor reg_b_data(4)) and
+    (reg_a_data(3) xnor reg_b_data(3)) and
+    (reg_a_data(2) xnor reg_b_data(2)) and
+    (reg_a_data(1) xnor reg_b_data(1)) and
+    (reg_a_data(0) xnor reg_b_data(0));
+
+  process(filtered_clock, display) is
     variable int_val : integer;
     begin
-      if((clk'event and clk = '1') and (display = '1') and (write_enable = '1') then
-        int_val := to_integer(signed(reg_a_data));
-        if(int_val >= 0) then
-          if(int_val < 10) then
-            report "   " & integer'image(int_val) severity note;
-          elsif(int_val < 100) then
-            report "  " & integer'image(int_val) severity note;
+      if(rising_edge(filtered_clk) then
+        if(display = '1') then
+          int_val := to_integer(signed(reg_a_data));
+          output <= reg_a_data;
+          if(int_val >= 0) then
+            if(int_val < 10) then
+              report "   " & integer'image(int_val) severity note;
+            elsif(int_val < 100) then
+              report "  " & integer'image(int_val) severity note;
+            else
+              report " " & integer'image(int_val) severity note;
+            end if;
           else
-            report " " & integer'image(int_val) severity note;
+            if(int_val > -10) then
+            report "  " & integer'image(int_val) severity note;
+            elsif(int_val > -100) then
+              report " " & integer'image(int_val) severity note;
+            else
+              report integer'image(int_val) severity note;
+            end if;
           end if;
         else
-          if(int_val > -10) then
-            report "  " & integer'image(int_val) severity note;
-          elsif(int_val > -100) then
-            report " " & integer'image(int_val) severity note;
-          else
-            report integer'image(int_val) severity note;
-          end if;
+          output <= "00000000";
         end if;
       end if;
   end process;
