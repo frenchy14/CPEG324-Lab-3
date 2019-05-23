@@ -6,7 +6,7 @@ entity calculator is
   port(
     instr : in std_logic_vector(7 downto 0);
     clock : in std_logic
-    output : out std_log_vector(7 downto 0)
+    output : out std_logic_vector(7 downto 0)
   );
 end entity calculator;
 
