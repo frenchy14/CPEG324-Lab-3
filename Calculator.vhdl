@@ -42,7 +42,7 @@ begin
     skipcount <= instr(4);
   end if;
 
-  if(ALU_out = "00000000")
+  if(ALU_out = "00000000") then
     if(skipcount = '1') then
       write_enable <= '0';
     elsif(skipcount = '0') then
