@@ -6,6 +6,7 @@ RUN = -r
 calculator:
 	$(GHDL) $(COMP) RegisterFile.vhdl
 	$(GHDL) $(COMP) ALU.vhdl
+	$(GHDL) $(COMP) ClockFilter.vhdl
 	$(GHDL) $(COMP) Calculator.vhdl
 	$(GHDL) $(COMP) Testbench.vhdl
 	$(GHDL) $(EXE) Testbench
