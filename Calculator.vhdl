@@ -50,7 +50,7 @@ signal write_data, reg_a_data, reg_b_data, sign_ext, ALU_out: std_logic_vector(7
 begin
   reg_file_0 : reg_file port map(reg_a, reg_b, reg_write, write_data, filtered_clock, write_enable, reg_a_data, reg_b_data);
   ALU_0 : ALU port map(reg_a_data, reg_b_data, instr(7), ALU_out);
-  clock_filter_0 : clock_filter port map(clock, filtereed_clock, instr(4), trigger);
+  clock_filter_0 : clock_filter port map(clock, filtered_clock, instr(4), trigger);
     
   reg_b <= instr(1 downto 0);
   reg_write <= instr(5 downto 4);
