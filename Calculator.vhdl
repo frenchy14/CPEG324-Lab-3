@@ -47,14 +47,14 @@ begin
       write_enable <= '0';
     elsif(skipcount = '0') then
       write_enable <= '0';
-    endif;
-  endif;
+    end if;
+  end if;
 
   if(skipcount = '1' and write_enable = '0') then
     skipcount <= '0';
   elsif(skipcount = '0' and write_enable = '0') then
     write_enable <= '1';
-  endif;  
+  end if;  
 
   reg_file_0 : reg_file port map(reg_a, reg_b, reg_write, write_data, write_enable, reg_a_data, reg_b_data);
   ALU0 : ALU port map(reg_a_data, reg_b_data, instr(7), ALU_out);
@@ -90,7 +90,7 @@ begin
             report "  " & integer'image(int_val) severity note;
           else
             report " " & integer'image(int_val) severity note;
-          endif;
+          end if;
         else
           if(int_val > -10) then
             report "  " & integer'image(int_val) severity note;
@@ -98,8 +98,8 @@ begin
             report " " & integer'image(int_val) severity note;
           else
             report integer'image(int_val) severity note;
-          endif;
-        endif;
-      endif;
+          end if;
+        end if;
+      end if;
   end process;
 end architecture structural;
