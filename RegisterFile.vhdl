@@ -26,7 +26,7 @@ architecture behavioral of reg_file is
       R1 when "01",
       R2 when "10",
       R3 when others;
-    with reg_b select reg_b <=
+    with reg_b select reg_b_data <=
       R0 when "00",
       R1 when "01",
       R2 when "10",
